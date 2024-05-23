@@ -1,6 +1,6 @@
 {
     "name": "MVP",
-    "rootNamespace": "",
+    "rootNamespace": "MVP",
     "references": [
 	"Disposable"
 	],
