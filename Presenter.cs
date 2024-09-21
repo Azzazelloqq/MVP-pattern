@@ -2,26 +2,50 @@
 
 namespace MVP
 {
-public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter 
-    where TModel : IModel 
-    where TView : IView
+/// <summary>
+/// Represents the base presenter class in the MVP (Model-View-Presenter) pattern.
+/// The presenter is responsible for mediating between the view and the model, handling business logic and updating the view.
+/// Inherits from <see cref="DisposableBase"/> to provide built-in resource management and implements <see cref="IPresenter"/>.
+/// </summary>
+/// <typeparam name="TView">The type of the view, which implements <see cref="IView"/>.</typeparam>
+/// <typeparam name="TModel">The type of the model, which implements <see cref="IModel"/>.</typeparam>
+public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
+	where TModel : IModel
+	where TView : IView
 {
-    protected IView view;
-    protected TModel model;
-    protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
-    
-    public Presenter(TView view, TModel model)
-    {
-        this.view = view;
-        this.model = model;
-        
-        compositeDisposable.AddDisposable(view, model);
-    }
+	/// <summary>
+	/// The view associated with this presenter.
+	/// </summary>
+	protected readonly TView view;
 
-    public override void Dispose()
-    {
-        base.Dispose();
-        compositeDisposable?.Dispose();
-    }
+	/// <summary>
+	/// The model associated with this presenter.
+	/// </summary>
+	protected readonly TModel model;
+
+	/// <summary>
+	/// A composite disposable that manages the disposal of both the view and the model, along with other disposable resources.
+	/// </summary>
+	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Presenter{TView, TModel}"/> class with the specified view and model.
+	/// </summary>
+	/// <param name="view">The view associated with the presenter.</param>
+	/// <param name="model">The model associated with the presenter.</param>
+	public Presenter(TView view, TModel model)
+	{
+		this.view = view;
+		this.model = model;
+
+		compositeDisposable.AddDisposable(view, model);
+	}
+
+	/// <inheritdoc/>
+	public override void Dispose()
+	{
+		base.Dispose();
+		compositeDisposable?.Dispose();
+	}
 }
 }
