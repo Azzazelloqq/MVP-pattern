@@ -24,7 +24,7 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	/// Initializes the view with the specified presenter.
 	/// </summary>
 	/// <param name="presenter">The presenter associated with the view.</param>
-	public void Initialize(TPresenter presenter)
+	public virtual void Initialize(TPresenter presenter)
 	{
 		this.presenter = presenter;
 	}
