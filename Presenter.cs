@@ -41,6 +41,11 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 		compositeDisposable.AddDisposable(view, model);
 	}
 
+	/// <summary>
+	/// Initializes the presenter. This method can be overridden by derived classes to provide custom initialization logic.
+	/// </summary>
+	public virtual void Initialize(){}
+
 	/// <inheritdoc/>
 	public override void Dispose()
 	{

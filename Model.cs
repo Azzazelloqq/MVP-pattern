@@ -14,6 +14,11 @@ public class Model : DisposableBase, IModel
 	/// </summary>
 	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
 
+	/// <summary>
+	/// Initializes the model. This method can be overridden by derived classes to provide custom initialization logic.
+	/// </summary>
+	public virtual void Initialize(){}
+	
 	/// <inheritdoc/>
 	public override void Dispose()
 	{
