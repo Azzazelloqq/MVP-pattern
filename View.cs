@@ -27,8 +27,15 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	public virtual void Initialize(TPresenter presenter)
 	{
 		this.presenter = presenter;
+		
+		OnInitialize();
 	}
 
+	protected virtual void OnInitialize()
+	{
+		
+	}
+	
 	/// <inheritdoc/>
 	public override void Dispose()
 	{

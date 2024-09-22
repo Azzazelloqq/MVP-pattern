@@ -17,7 +17,15 @@ public class Model : DisposableBase, IModel
 	/// <summary>
 	/// Initializes the model. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
-	public virtual void Initialize(){}
+	public virtual void Initialize()
+	{
+		OnInitialize();
+	}
+
+	protected virtual void OnInitialize()
+	{
+		
+	}
 	
 	/// <inheritdoc/>
 	public override void Dispose()

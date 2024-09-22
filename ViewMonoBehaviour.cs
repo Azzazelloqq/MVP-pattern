@@ -22,6 +22,13 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	public void Initialize(TPresenter presenter)
 	{
 		this.presenter = presenter;
+		
+		OnInitialize();
+	}
+
+	protected virtual void OnInitialize()
+	{
+		
 	}
 }
 }
