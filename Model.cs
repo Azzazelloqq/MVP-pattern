@@ -1,4 +1,6 @@
-﻿using Disposable;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Disposable;
 
 namespace MVP
 {
@@ -15,6 +17,14 @@ public class Model : DisposableBase, IModel
 	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
 
 	/// <summary>
+	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
+	/// </summary>
+	public async Task InitializeAsync(CancellationToken token)
+	{
+		await OnInitializeAsync(token);
+	}
+	
+	/// <summary>
 	/// Initializes the model. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
 	public virtual void Initialize()
@@ -23,6 +33,11 @@ public class Model : DisposableBase, IModel
 	}
 
 	protected virtual void OnInitialize()
+	{
+		
+	}
+	
+	protected virtual async Task OnInitializeAsync(CancellationToken token)
 	{
 		
 	}

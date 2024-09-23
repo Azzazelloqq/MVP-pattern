@@ -1,4 +1,6 @@
-﻿using Disposable;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Disposable;
 
 namespace MVP
 {
@@ -42,6 +44,14 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	}
 
 	/// <summary>
+	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
+	/// </summary>
+	public async Task InitializeAsync(CancellationToken token)
+	{
+		await OnInitializeAsync(token);
+	}
+
+	/// <summary>
 	/// Initializes the presenter. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
 	public void Initialize()
@@ -51,6 +61,11 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 
 	protected virtual void OnInitialize()
 	{
+	}
+
+	protected virtual async Task OnInitializeAsync(CancellationToken token)
+	{
+		
 	}
 
 	/// <inheritdoc/>
