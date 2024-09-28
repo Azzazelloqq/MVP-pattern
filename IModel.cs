@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MVP
 {
@@ -9,5 +11,15 @@ namespace MVP
 /// </summary>
 public interface IModel : IDisposable
 {
+	/// <summary>
+	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
+	/// </summary>
+	public Task InitializeAsync(CancellationToken token);
+
+	/// <summary>
+	/// Initializes the model. This method can be overridden by derived classes to provide custom initialization logic.
+	/// </summary>
+	public void Initialize();
+
 }
 }

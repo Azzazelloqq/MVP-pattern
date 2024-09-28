@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Disposable;
 
@@ -21,24 +22,29 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	/// A composite disposable that manages the disposal of any additional resources associated with the view.
 	/// </summary>
 	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
-
-	/// <summary>
-	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
-	/// </summary>
-	public async Task InitializeAsync(CancellationToken token)
-	{
-		await OnInitializeAsync(token);
-	}
 	
-	/// <summary>
-	/// Initializes the view with the specified presenter.
-	/// </summary>
-	/// <param name="presenter">The presenter associated with the view.</param>
-	public virtual void Initialize(TPresenter presenter)
+	/// <inheritdoc/>
+	public virtual void Initialize(IPresenter presenter)
 	{
-		this.presenter = presenter;
+		if (!(presenter is TPresenter correctPresenter)) {
+			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
+		}
+		
+		this.presenter = correctPresenter;
 		
 		OnInitialize();
+	}
+	
+	/// <inheritdoc/>
+	public virtual async Task InitializeAsync(IPresenter presenter, CancellationToken token)
+	{
+		if (!(presenter is TPresenter correctPresenter)) {
+			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
+		}
+
+		presenter = correctPresenter;
+		
+		await OnInitializeAsync(token);
 	}
 
 	protected virtual void OnInitialize()

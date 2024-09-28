@@ -16,17 +16,13 @@ public class Model : DisposableBase, IModel
 	/// </summary>
 	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
 
-	/// <summary>
-	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
-	/// </summary>
-	public async Task InitializeAsync(CancellationToken token)
+	/// <inheritdoc cref="IModel.InitializeAsync(CancellationToken)" />
+	public virtual async Task InitializeAsync(CancellationToken token)
 	{
 		await OnInitializeAsync(token);
 	}
 	
-	/// <summary>
-	/// Initializes the model. This method can be overridden by derived classes to provide custom initialization logic.
-	/// </summary>
+	/// <inheritdoc/>
 	public virtual void Initialize()
 	{
 		OnInitialize();

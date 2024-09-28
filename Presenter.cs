@@ -46,16 +46,21 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	/// <summary>
 	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
-	public async Task InitializeAsync(CancellationToken token)
-	{
+	public virtual async Task InitializeAsync(CancellationToken token) {
+		await view.InitializeAsync(this, token);
+		await model.InitializeAsync(token);
+		
 		await OnInitializeAsync(token);
 	}
 
 	/// <summary>
 	/// Initializes the presenter. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
-	public void Initialize()
+	public virtual void Initialize()
 	{
+		view.Initialize(this);
+		model.Initialize();
+		
 		OnInitialize();
 	}
 

@@ -1,4 +1,7 @@
-﻿using Disposable;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Disposable;
 
 namespace MVP
 {
@@ -15,15 +18,32 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	/// </summary>
 	protected TPresenter presenter;
 
-	/// <summary>
-	/// Initializes the view with the specified presenter.
-	/// </summary>
-	/// <param name="presenter">The presenter associated with the view.</param>
-	public void Initialize(TPresenter presenter)
+	/// <inheritdoc/>
+	public virtual void Initialize(IPresenter presenter)
 	{
-		this.presenter = presenter;
+		if (!(presenter is TPresenter correctPresenter)) {
+			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
+		}
+		
+		this.presenter = correctPresenter;
 		
 		OnInitialize();
+	}
+	
+	/// <inheritdoc/>
+	public virtual async Task InitializeAsync(IPresenter presenter, CancellationToken token)
+	{
+		if (!(presenter is TPresenter correctPresenter)) {
+			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
+		}
+
+		presenter = correctPresenter;
+		
+		await OnInitializeAsync(token);
+	}
+	protected virtual async Task OnInitializeAsync(CancellationToken token)
+	{
+		
 	}
 
 	protected virtual void OnInitialize()

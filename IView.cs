@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MVP
 {
@@ -9,5 +11,15 @@ namespace MVP
 /// </summary>
 public interface IView : IDisposable
 {
+	/// <summary>
+	/// Initializes the view with the specified presenter.
+	/// </summary>
+	/// <param name="presenter">The presenter associated with the view.</param>
+	public void Initialize(IPresenter presenter);
+
+	/// <summary>
+	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
+	/// </summary>
+	public Task InitializeAsync(IPresenter presenter, CancellationToken token);
 }
 }
