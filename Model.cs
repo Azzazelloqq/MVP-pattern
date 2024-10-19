@@ -33,16 +33,23 @@ public class Model : DisposableBase, IModel
 		
 	}
 	
-	protected virtual async Task OnInitializeAsync(CancellationToken token)
-	{
-		
-	}
-	
 	/// <inheritdoc/>
 	public override void Dispose()
 	{
 		base.Dispose();
 		compositeDisposable?.Dispose();
+		
+		OnDispose();
+	}
+	
+	protected virtual async Task OnInitializeAsync(CancellationToken token)
+	{
+		
+	}
+
+	protected virtual void OnDispose()
+	{
+		
 	}
 }
 }

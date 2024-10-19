@@ -63,6 +63,14 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 		
 		OnInitialize();
 	}
+	
+	/// <inheritdoc/>
+	public override void Dispose()
+	{
+		base.Dispose();
+		compositeDisposable?.Dispose();
+		OnDispose();
+	}
 
 	protected virtual void OnInitialize()
 	{
@@ -73,11 +81,9 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 		
 	}
 
-	/// <inheritdoc/>
-	public override void Dispose()
+	protected virtual void OnDispose()
 	{
-		base.Dispose();
-		compositeDisposable?.Dispose();
+		
 	}
 }
 }

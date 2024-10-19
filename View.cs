@@ -46,6 +46,16 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 		
 		await OnInitializeAsync(token);
 	}
+	
+	/// <inheritdoc/>
+	public override void Dispose()
+	{
+		base.Dispose();
+
+		compositeDisposable?.Dispose();
+		
+		OnDispose();
+	}
 
 	protected virtual void OnInitialize()
 	{
@@ -56,13 +66,10 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	{
 		
 	}
-	
-	/// <inheritdoc/>
-	public override void Dispose()
-	{
-		base.Dispose();
 
-		compositeDisposable?.Dispose();
+	protected virtual void OnDispose()
+	{
+		
 	}
 }
 }
