@@ -52,9 +52,9 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	{
 		base.Dispose();
 
-		compositeDisposable?.Dispose();
-		
 		OnDispose();
+		
+		compositeDisposable?.Dispose();
 	}
 
 	protected virtual void OnInitialize()

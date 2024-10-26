@@ -37,9 +37,10 @@ public class Model : DisposableBase, IModel
 	public override void Dispose()
 	{
 		base.Dispose();
-		compositeDisposable?.Dispose();
 		
 		OnDispose();
+		
+		compositeDisposable?.Dispose();
 	}
 	
 	protected virtual async Task OnInitializeAsync(CancellationToken token)
