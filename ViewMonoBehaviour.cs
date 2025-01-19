@@ -18,6 +18,16 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	/// </summary>
 	protected TPresenter presenter;
 
+	/// <summary>
+	/// Gets the cancellation token that is triggered when the view is disposed.
+	/// </summary>
+	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
+	
+	/// <summary>
+	/// The cancellation token source that is used to signal disposal of the view.
+	/// </summary>
+	private readonly CancellationTokenSource _disposeCancellationSource = new();
+	
 	/// <inheritdoc/>
 	public virtual void Initialize(IPresenter presenter)
 	{
@@ -47,6 +57,25 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	}
 
 	protected virtual void OnInitialize()
+	{
+		
+	}
+
+	public sealed override void Dispose()
+	{
+		base.Dispose();
+		
+		OnDispose();
+		
+		if (!_disposeCancellationSource.IsCancellationRequested)
+		{
+			_disposeCancellationSource.Cancel();
+		}
+		
+		_disposeCancellationSource.Dispose();
+	}
+
+	protected virtual void OnDispose()
 	{
 		
 	}

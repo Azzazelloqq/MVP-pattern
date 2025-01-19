@@ -16,14 +16,24 @@ public class Model : DisposableBase, IModel
 	/// </summary>
 	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
 
+	/// <summary>
+	/// Gets the cancellation token that is triggered when the model is disposed.
+	/// </summary>
+	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
+	
+	/// <summary>
+	/// The cancellation token source that is used to signal disposal of the model.
+	/// </summary>
+	private readonly CancellationTokenSource _disposeCancellationSource = new();
+	
 	/// <inheritdoc cref="IModel.InitializeAsync(CancellationToken)" />
-	public virtual async Task InitializeAsync(CancellationToken token)
+	public async Task InitializeAsync(CancellationToken token)
 	{
 		await OnInitializeAsync(token);
 	}
 	
 	/// <inheritdoc/>
-	public virtual void Initialize()
+	public void Initialize()
 	{
 		OnInitialize();
 	}
@@ -34,11 +44,18 @@ public class Model : DisposableBase, IModel
 	}
 	
 	/// <inheritdoc/>
-	public override void Dispose()
+	public sealed override void Dispose()
 	{
 		base.Dispose();
 		
 		OnDispose();
+		
+		if (!_disposeCancellationSource.IsCancellationRequested)
+		{
+			_disposeCancellationSource.Cancel();
+		}
+		
+		_disposeCancellationSource.Dispose();
 		
 		compositeDisposable?.Dispose();
 	}

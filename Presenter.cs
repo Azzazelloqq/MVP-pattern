@@ -29,7 +29,17 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	/// A composite disposable that manages the disposal of both the view and the model, along with other disposable resources.
 	/// </summary>
 	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
-
+		
+	/// <summary>
+	/// Gets the cancellation token that is triggered when the presenter is disposed.
+	/// </summary>
+	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
+	
+	/// <summary>
+	/// The cancellation token source that is used to signal disposal of the presenter.
+	/// </summary>
+	private readonly CancellationTokenSource _disposeCancellationSource = new();
+	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Presenter{TView, TModel}"/> class with the specified view and model.
 	/// </summary>
@@ -46,7 +56,7 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	/// <summary>
 	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
-	public virtual async Task InitializeAsync(CancellationToken token) {
+	public async Task InitializeAsync(CancellationToken token) {
 		await view.InitializeAsync(this, token);
 		await model.InitializeAsync(token);
 		
@@ -56,7 +66,7 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	/// <summary>
 	/// Initializes the presenter. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
-	public virtual void Initialize()
+	public void Initialize()
 	{
 		view.Initialize(this);
 		model.Initialize();
@@ -72,6 +82,13 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 		OnDispose();
 		
 		compositeDisposable?.Dispose();
+		
+		if (!_disposeCancellationSource.IsCancellationRequested)
+		{
+			_disposeCancellationSource.Cancel();
+		}
+		
+		_disposeCancellationSource.Dispose();
 	}
 
 	protected virtual void OnInitialize()

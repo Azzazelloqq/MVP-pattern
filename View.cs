@@ -22,9 +22,19 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	/// A composite disposable that manages the disposal of any additional resources associated with the view.
 	/// </summary>
 	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
+
+	/// <summary>
+	/// Gets the cancellation token that is triggered when the view is disposed.
+	/// </summary>
+	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
+	
+	/// <summary>
+	/// The cancellation token source that is used to signal disposal of the view.
+	/// </summary>
+	private readonly CancellationTokenSource _disposeCancellationSource = new();
 	
 	/// <inheritdoc/>
-	public virtual void Initialize(IPresenter presenter)
+	public void Initialize(IPresenter presenter)
 	{
 		if (!(presenter is TPresenter correctPresenter)) {
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
@@ -36,7 +46,7 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	}
 	
 	/// <inheritdoc/>
-	public virtual async Task InitializeAsync(IPresenter presenter, CancellationToken token)
+	public async Task InitializeAsync(IPresenter presenter, CancellationToken token)
 	{
 		if (!(presenter is TPresenter correctPresenter)) {
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
@@ -48,13 +58,20 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	}
 	
 	/// <inheritdoc/>
-	public override void Dispose()
+	public sealed override void Dispose()
 	{
 		base.Dispose();
 
 		OnDispose();
 		
 		compositeDisposable?.Dispose();
+		
+		if (!_disposeCancellationSource.IsCancellationRequested)
+		{
+			_disposeCancellationSource.Cancel();
+		}
+		
+		_disposeCancellationSource.Dispose();
 	}
 
 	protected virtual void OnInitialize()
