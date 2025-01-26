@@ -31,7 +31,7 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	/// <inheritdoc/>
 	public virtual void Initialize(IPresenter presenter)
 	{
-		if (!(presenter is TPresenter correctPresenter)) {
+		if (presenter is not TPresenter correctPresenter) {
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
 		}
 		
@@ -43,11 +43,11 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	/// <inheritdoc/>
 	public virtual async Task InitializeAsync(IPresenter presenter, CancellationToken token)
 	{
-		if (!(presenter is TPresenter correctPresenter)) {
+		if (presenter is not TPresenter correctPresenter) {
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
 		}
 
-		presenter = correctPresenter;
+		this.presenter = correctPresenter;
 		
 		await OnInitializeAsync(token);
 	}

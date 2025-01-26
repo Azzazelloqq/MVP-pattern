@@ -52,7 +52,7 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
 		}
 
-		presenter = correctPresenter;
+		this.presenter = correctPresenter;
 		
 		await OnInitializeAsync(token);
 	}
