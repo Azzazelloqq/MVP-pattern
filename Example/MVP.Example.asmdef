@@ -1,0 +1,18 @@
+{
+    "name": "MVP.Example",
+    "rootNamespace": "MVP.Example",
+    "references": [
+        "MVP",
+        "Unity.TextMeshPro",
+        "Disposable"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
