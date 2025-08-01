@@ -12,8 +12,10 @@ namespace MVP
 public interface IModel : IDisposable
 {
 	/// <summary>
-	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
+	/// Initializes the model async. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
+	/// <param name="token">Cancellation token to observe during the initialization process.</param>
+	/// <returns>A task that represents the asynchronous initialization operation.</returns>
 	public Task InitializeAsync(CancellationToken token);
 
 	/// <summary>

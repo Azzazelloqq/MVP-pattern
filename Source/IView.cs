@@ -18,8 +18,11 @@ public interface IView : IDisposable
 	public void Initialize(IPresenter presenter);
 
 	/// <summary>
-	/// Initializes the presenter async. This method can be overridden by derived classes to provide custom initialization logic.
+	/// Initializes the view async. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
+	/// <param name="presenter">The presenter associated with the view.</param>
+	/// <param name="token">Cancellation token to observe during the initialization process.</param>
+	/// <returns>A task that represents the asynchronous initialization operation.</returns>
 	public Task InitializeAsync(IPresenter presenter, CancellationToken token);
 }
 }

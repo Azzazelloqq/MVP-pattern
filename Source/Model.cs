@@ -9,7 +9,7 @@ namespace MVP
 /// Inherits from <see cref="DisposableBase"/> to provide built-in resource management and implements <see cref="IModel"/>.
 /// This class manages the disposal of resources through the use of a composite disposable.
 /// </summary>
-public class Model : DisposableBase, IModel
+public abstract class Model : DisposableBase, IModel
 {
 	/// <summary>
 	/// A composite disposable that manages the disposal of multiple resources.
@@ -20,54 +20,65 @@ public class Model : DisposableBase, IModel
 	/// Gets the cancellation token that is triggered when the model is disposed.
 	/// </summary>
 	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
-	
+
 	/// <summary>
 	/// The cancellation token source that is used to signal disposal of the model.
 	/// </summary>
 	private readonly CancellationTokenSource _disposeCancellationSource = new();
-	
-	/// <inheritdoc cref="IModel.InitializeAsync(CancellationToken)" />
+
+	/// <inheritdoc/>
 	public async Task InitializeAsync(CancellationToken token)
 	{
 		await OnInitializeAsync(token);
 	}
-	
+
 	/// <inheritdoc/>
 	public void Initialize()
 	{
 		OnInitialize();
 	}
 
-	protected virtual void OnInitialize()
+	/// <summary>
+	/// Disposes the model and releases associated resources.
+	/// </summary>
+	/// <param name="disposing">True if called from Dispose method, false if called from finalizer.</param>
+	protected sealed override void Dispose(bool disposing)
 	{
-		
-	}
-	
-	/// <inheritdoc/>
-	public sealed override void Dispose()
-	{
-		base.Dispose();
-		
+		base.Dispose(disposing);
+
 		OnDispose();
+
+		if (!_disposeCancellationSource.IsCancellationRequested)
+		{
+			_disposeCancellationSource.Cancel();
+		}
+
+		_disposeCancellationSource.Dispose();
+
+		compositeDisposable?.Dispose();
+	}
+
+	protected sealed override async ValueTask DisposeAsyncCore(CancellationToken token, bool continueOnCapturedContext)
+	{
+		await OnDisposeAsync(token);
 		
 		if (!_disposeCancellationSource.IsCancellationRequested)
 		{
 			_disposeCancellationSource.Cancel();
 		}
-		
+
 		_disposeCancellationSource.Dispose();
-		
-		compositeDisposable?.Dispose();
-	}
-	
-	protected virtual async Task OnInitializeAsync(CancellationToken token)
-	{
-		
+
+		if (compositeDisposable != null)
+		{
+			await compositeDisposable.DisposeAsync(token, continueOnCapturedContext);
+		}
 	}
 
-	protected virtual void OnDispose()
-	{
-		
-	}
+	protected abstract void OnInitialize();
+	protected abstract ValueTask OnInitializeAsync(CancellationToken token);
+	
+	protected abstract void OnDispose();
+	protected abstract ValueTask OnDisposeAsync(CancellationToken token);
 }
 }

@@ -22,62 +22,81 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	/// Gets the cancellation token that is triggered when the view is disposed.
 	/// </summary>
 	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
+
+	/// <summary>
+	/// A composite disposable that manages the disposal of any additional resources associated with the view.
+	/// </summary>
+	protected readonly ICompositeDisposable compositeDisposable = new CompositeDisposable();
 	
 	/// <summary>
 	/// The cancellation token source that is used to signal disposal of the view.
 	/// </summary>
 	private readonly CancellationTokenSource _disposeCancellationSource = new();
-	
+
 	/// <inheritdoc/>
 	public virtual void Initialize(IPresenter presenter)
 	{
-		if (presenter is not TPresenter correctPresenter) {
+		if (presenter is not TPresenter correctPresenter)
+		{
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
 		}
-		
+
 		this.presenter = correctPresenter;
-		
+
 		OnInitialize();
 	}
-	
+
 	/// <inheritdoc/>
 	public virtual async Task InitializeAsync(IPresenter presenter, CancellationToken token)
 	{
-		if (presenter is not TPresenter correctPresenter) {
+		if (presenter is not TPresenter correctPresenter)
+		{
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
 		}
 
 		this.presenter = correctPresenter;
-		
+
 		await OnInitializeAsync(token);
 	}
-	protected virtual async Task OnInitializeAsync(CancellationToken token)
-	{
-		
-	}
 
-	protected virtual void OnInitialize()
+	/// <summary>
+	/// Disposes the view and releases associated resources.
+	/// </summary>
+	/// <param name="disposing">True if called from Dispose method, false if called from finalizer.</param>
+	protected sealed override void Dispose(bool disposing)
 	{
-		
-	}
+		base.Dispose(disposing);
 
-	public sealed override void Dispose()
-	{
-		base.Dispose();
-		
 		OnDispose();
+
+		compositeDisposable.Dispose();
 		
 		if (!_disposeCancellationSource.IsCancellationRequested)
 		{
 			_disposeCancellationSource.Cancel();
 		}
-		
+
 		_disposeCancellationSource.Dispose();
 	}
 
-	protected virtual void OnDispose()
+	protected sealed override async ValueTask DisposeAsyncCore(CancellationToken token, bool continueOnCapturedContext = false)
 	{
+		await OnDisposeAsync(token);
+
+		await compositeDisposable.DisposeAsync(token, continueOnCapturedContext);
 		
+		if (!_disposeCancellationSource.IsCancellationRequested)
+		{
+			_disposeCancellationSource.Cancel();
+		}
+
+		_disposeCancellationSource.Dispose();
 	}
+
+	protected abstract void OnInitialize();
+	protected abstract ValueTask OnInitializeAsync(CancellationToken token);
+
+	protected abstract void OnDispose();
+	protected abstract ValueTask OnDisposeAsync(CancellationToken token);
 }
 }

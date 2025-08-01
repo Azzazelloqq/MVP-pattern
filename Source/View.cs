@@ -36,7 +36,7 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	/// <inheritdoc/>
 	public void Initialize(IPresenter presenter)
 	{
-		if (!(presenter is TPresenter correctPresenter)) {
+		if (presenter is not TPresenter correctPresenter) {
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
 		}
 		
@@ -48,7 +48,7 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	/// <inheritdoc/>
 	public async Task InitializeAsync(IPresenter presenter, CancellationToken token)
 	{
-		if (!(presenter is TPresenter correctPresenter)) {
+		if (presenter is not TPresenter correctPresenter) {
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));
 		}
 
@@ -57,10 +57,13 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 		await OnInitializeAsync(token);
 	}
 	
-	/// <inheritdoc/>
-	public sealed override void Dispose()
+	/// <summary>
+	/// Disposes the view and releases associated resources.
+	/// </summary>
+	/// <param name="disposing">True if called from Dispose method, false if called from finalizer.</param>
+	protected sealed override void Dispose(bool disposing)
 	{
-		base.Dispose();
+		base.Dispose(disposing);
 
 		OnDispose();
 		
@@ -74,19 +77,28 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 		_disposeCancellationSource.Dispose();
 	}
 
-	protected virtual void OnInitialize()
+	protected override async ValueTask DisposeAsyncCore(CancellationToken token, bool continueOnCapturedContext)
 	{
+		await OnDisposeAsync(token);
 		
+		if (compositeDisposable != null)
+		{
+			await compositeDisposable.DisposeAsync(token, continueOnCapturedContext);
+		}
+		
+		if (!_disposeCancellationSource.IsCancellationRequested)
+		{
+			_disposeCancellationSource.Cancel();
+		}
+		
+		_disposeCancellationSource.Dispose();
 	}
 	
-	protected virtual async Task OnInitializeAsync(CancellationToken token)
-	{
-		
-	}
 
-	protected virtual void OnDispose()
-	{
-		
-	}
+	protected abstract void OnInitialize();
+	protected abstract ValueTask OnInitializeAsync(CancellationToken token);
+	
+	protected abstract void OnDispose();
+	protected abstract ValueTask OnDisposeAsync(CancellationToken token);
 }
 }
