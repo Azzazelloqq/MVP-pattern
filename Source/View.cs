@@ -26,12 +26,7 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	/// <summary>
 	/// Gets the cancellation token that is triggered when the view is disposed.
 	/// </summary>
-	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
-	
-	/// <summary>
-	/// The cancellation token source that is used to signal disposal of the view.
-	/// </summary>
-	private readonly CancellationTokenSource _disposeCancellationSource = new();
+	protected CancellationToken disposeToken => disposeCancellationToken;
 	
 	/// <inheritdoc/>
 	public void Initialize(IPresenter presenter)
@@ -68,13 +63,6 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 		OnDispose();
 		
 		compositeDisposable?.Dispose();
-		
-		if (!_disposeCancellationSource.IsCancellationRequested)
-		{
-			_disposeCancellationSource.Cancel();
-		}
-		
-		_disposeCancellationSource.Dispose();
 	}
 
 	protected override async ValueTask DisposeAsyncCore(CancellationToken token, bool continueOnCapturedContext)
@@ -85,13 +73,6 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 		{
 			await compositeDisposable.DisposeAsync(token, continueOnCapturedContext);
 		}
-		
-		if (!_disposeCancellationSource.IsCancellationRequested)
-		{
-			_disposeCancellationSource.Cancel();
-		}
-		
-		_disposeCancellationSource.Dispose();
 	}
 	
 

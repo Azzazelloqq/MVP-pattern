@@ -34,12 +34,7 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	/// <summary>
 	/// Gets the cancellation token that is triggered when the presenter is disposed.
 	/// </summary>
-	protected CancellationToken disposeToken => _disposeCancellationSource.Token;
-	
-	/// <summary>
-	/// The cancellation token source that is used to signal disposal of the presenter.
-	/// </summary>
-	private readonly CancellationTokenSource _disposeCancellationSource = new();
+	protected CancellationToken disposeToken => disposeCancellationToken;
 	
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Presenter{TView, TModel}"/> class with the specified view and model.
@@ -93,13 +88,6 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 		model?.Dispose();
 		
 		compositeDisposable?.Dispose();
-		
-		if (!_disposeCancellationSource.IsCancellationRequested)
-		{
-			_disposeCancellationSource.Cancel();
-		}
-		
-		_disposeCancellationSource.Dispose();
 	}
 	
 	protected sealed override async ValueTask DisposeAsyncCore(CancellationToken token, bool continueOnCapturedContext)
@@ -137,13 +125,6 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 		{
 			await compositeDisposable.DisposeAsync(token, continueOnCapturedContext);
 		}
-		
-		if (!_disposeCancellationSource.IsCancellationRequested)
-		{
-			_disposeCancellationSource.Cancel();
-		}
-		
-		_disposeCancellationSource.Dispose();
 	}
 
 	protected abstract void OnInitialize();
