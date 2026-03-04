@@ -1,6 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+#if PROJECT_SUPPORT_UNITASK
+using MVPTask = Cysharp.Threading.Tasks.UniTask;
+#else
+using MVPTask = System.Threading.Tasks.Task;
+#endif
 using Disposable;
 
 namespace MVP
@@ -41,7 +46,7 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	}
 	
 	/// <inheritdoc/>
-	public async Task InitializeAsync(IPresenter presenter, CancellationToken token)
+	public async MVPTask InitializeAsync(IPresenter presenter, CancellationToken token)
 	{
 		if (presenter is not TPresenter correctPresenter) {
 			throw new ArgumentException("Presenter must be of type " + typeof(TPresenter).Name, nameof(presenter));

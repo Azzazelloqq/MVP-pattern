@@ -1,5 +1,10 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
+#if PROJECT_SUPPORT_UNITASK
+using MVPTask = Cysharp.Threading.Tasks.UniTask;
+#else
+using MVPTask = System.Threading.Tasks.Task;
+#endif
 using Disposable;
 
 namespace MVP
@@ -22,7 +27,7 @@ public abstract class Model : DisposableBase, IModel
 	protected CancellationToken disposeToken => disposeCancellationToken;
 
 	/// <inheritdoc/>
-	public async Task InitializeAsync(CancellationToken token)
+	public async MVPTask InitializeAsync(CancellationToken token)
 	{
 		await OnInitializeAsync(token);
 	}

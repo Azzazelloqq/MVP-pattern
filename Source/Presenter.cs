@@ -1,6 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+#if PROJECT_SUPPORT_UNITASK
+using MVPTask = Cysharp.Threading.Tasks.UniTask;
+#else
+using MVPTask = System.Threading.Tasks.Task;
+#endif
 using Disposable;
 
 namespace MVP
@@ -57,8 +62,8 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	/// Initializes the view, model, and calls custom initialization logic.
 	/// </summary>
 	/// <param name="token">Cancellation token to observe during the initialization process.</param>
-	/// <returns>A task that represents the asynchronous initialization operation.</returns>
-	public async Task InitializeAsync(CancellationToken token) {
+	/// <returns>An awaitable that represents the asynchronous initialization operation.</returns>
+	public async MVPTask InitializeAsync(CancellationToken token) {
 		await view.InitializeAsync(this, token);
 		await model.InitializeAsync(token);
 		

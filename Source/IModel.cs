@@ -1,6 +1,12 @@
-﻿using System;
+using System;
 using System.Threading;
+#if PROJECT_SUPPORT_UNITASK
+using Cysharp.Threading.Tasks;
+using MVPTask = Cysharp.Threading.Tasks.UniTask;
+#else
 using System.Threading.Tasks;
+using MVPTask = System.Threading.Tasks.Task;
+#endif
 
 namespace MVP
 {
@@ -15,8 +21,8 @@ public interface IModel : IDisposable
 	/// Initializes the model async. This method can be overridden by derived classes to provide custom initialization logic.
 	/// </summary>
 	/// <param name="token">Cancellation token to observe during the initialization process.</param>
-	/// <returns>A task that represents the asynchronous initialization operation.</returns>
-	public Task InitializeAsync(CancellationToken token);
+	/// <returns>An awaitable that represents the asynchronous initialization operation.</returns>
+	public MVPTask InitializeAsync(CancellationToken token);
 
 	/// <summary>
 	/// Initializes the model. This method can be overridden by derived classes to provide custom initialization logic.

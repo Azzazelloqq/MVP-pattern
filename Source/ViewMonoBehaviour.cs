@@ -1,6 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+#if PROJECT_SUPPORT_UNITASK
+using MVPTask = Cysharp.Threading.Tasks.UniTask;
+#else
+using MVPTask = System.Threading.Tasks.Task;
+#endif
 using Disposable;
 
 namespace MVP
@@ -42,7 +47,7 @@ public abstract class ViewMonoBehaviour<TPresenter> : MonoBehaviourDisposable, I
 	}
 
 	/// <inheritdoc/>
-	public virtual async Task InitializeAsync(IPresenter presenter, CancellationToken token)
+	public virtual async MVPTask InitializeAsync(IPresenter presenter, CancellationToken token)
 	{
 		if (presenter is not TPresenter correctPresenter)
 		{

@@ -1,6 +1,12 @@
-﻿using System;
+using System;
 using System.Threading;
+#if PROJECT_SUPPORT_UNITASK
+using Cysharp.Threading.Tasks;
+using MVPTask = Cysharp.Threading.Tasks.UniTask;
+#else
 using System.Threading.Tasks;
+using MVPTask = System.Threading.Tasks.Task;
+#endif
 
 namespace MVP
 {
@@ -22,7 +28,7 @@ public interface IView : IDisposable
 	/// </summary>
 	/// <param name="presenter">The presenter associated with the view.</param>
 	/// <param name="token">Cancellation token to observe during the initialization process.</param>
-	/// <returns>A task that represents the asynchronous initialization operation.</returns>
-	public Task InitializeAsync(IPresenter presenter, CancellationToken token);
+	/// <returns>An awaitable that represents the asynchronous initialization operation.</returns>
+	public MVPTask InitializeAsync(IPresenter presenter, CancellationToken token);
 }
 }
