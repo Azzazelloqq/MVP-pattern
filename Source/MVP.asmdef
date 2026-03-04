@@ -2,7 +2,8 @@
     "name": "MVP",
     "rootNamespace": "MVP",
     "references": [
-	"Disposable"
+        "Disposable", 
+        "UniTask"
 	],
     "includePlatforms": [],
     "excludePlatforms": [],
