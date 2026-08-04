@@ -64,8 +64,6 @@ public abstract class View<TPresenter> : DisposableBase, IView where TPresenter 
 	protected sealed override void Dispose(bool disposing)
 	{
 		base.Dispose(disposing);
-
-		OnDispose();
 		
 		compositeDisposable?.Dispose();
 	}

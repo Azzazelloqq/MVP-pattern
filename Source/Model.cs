@@ -46,8 +46,6 @@ public abstract class Model : DisposableBase, IModel
 	{
 		base.Dispose(disposing);
 
-		OnDispose();
-
 		compositeDisposable?.Dispose();
 	}
 

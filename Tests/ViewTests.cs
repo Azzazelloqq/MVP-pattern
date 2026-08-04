@@ -104,6 +104,16 @@ namespace MVP.Tests
             // Assert
             Assert.IsTrue(_view.IsDisposeCalled);
             Assert.IsFalse(_view.IsDisposeAsyncCalled);
+            Assert.AreEqual(1, _view.OnDisposeCallCount);
+        }
+
+        [Test]
+        public void MultipleDispose_CallsOnDisposeExactlyOnce()
+        {
+            _view.Dispose();
+            _view.Dispose();
+
+            Assert.AreEqual(1, _view.OnDisposeCallCount);
         }
 
         [Test]

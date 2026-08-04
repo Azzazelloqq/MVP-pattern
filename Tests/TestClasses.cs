@@ -57,6 +57,7 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeCallCount { get; private set; }
         
         public string TestData { get; set; } = "Initial";
         public int CallOrder { get; private set; }
@@ -91,6 +92,7 @@ namespace MVP.Tests
         protected override void OnDispose()
         {
             IsDisposeCalled = true;
+            OnDisposeCallCount++;
             CallOrder = CallOrderCounter.GetNext();
         }
 
@@ -111,6 +113,7 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeCallCount { get; private set; }
         
         public TestPresenter AssignedPresenter => presenter;
         public int CallOrder { get; private set; }
@@ -144,6 +147,7 @@ namespace MVP.Tests
         protected override void OnDispose()
         {
             IsDisposeCalled = true;
+            OnDisposeCallCount++;
             CallOrder = CallOrderCounter.GetNext();
         }
 
@@ -390,6 +394,7 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeCallCount { get; private set; }
         
         public TestView AssignedView => view;
         public TestModel AssignedModel => model;
@@ -428,6 +433,7 @@ namespace MVP.Tests
         protected override void OnDispose()
         {
             IsDisposeCalled = true;
+            OnDisposeCallCount++;
             CallOrder = CallOrderCounter.GetNext();
         }
 

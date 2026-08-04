@@ -86,8 +86,6 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 	{
 		base.Dispose(disposing);
 		
-		OnDispose();
-		
 		// Dispose view and model synchronously
 		view?.Dispose();
 		model?.Dispose();
