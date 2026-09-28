@@ -134,7 +134,7 @@ public abstract class Presenter<TView, TModel> : DisposableBase, IPresenter
 
 	protected abstract ValueTask OnInitializeAsync(CancellationToken token);
 
-	protected abstract void OnDispose();
+	protected abstract override void OnDispose();
 
 	protected abstract ValueTask OnDisposeAsync(CancellationToken token);
 }

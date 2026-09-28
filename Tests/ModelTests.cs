@@ -144,6 +144,10 @@ namespace MVP.Tests
             
             // Act & Assert - Second disposal should not throw
             await _model.DisposeAsync(cts.Token);
+            _model.Dispose();
+
+            Assert.AreEqual(1, _model.OnDisposeAsyncCallCount);
+            Assert.AreEqual(0, _model.OnDisposeCallCount);
         }
     }
 }

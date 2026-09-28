@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using MVP;
 
 namespace MVP.Tests
@@ -151,7 +153,7 @@ namespace MVP.Tests
         }
 
         [Test]
-        public void MultipleDispose_DoesNotThrow()
+        public void MultipleDispose_CallsOnDisposeExactlyOnce()
         {
             // Act & Assert
             Assert.DoesNotThrow(() =>
@@ -159,6 +161,9 @@ namespace MVP.Tests
                 _view.Dispose();
                 _view.Dispose(); // Second call should not throw
             });
+
+            Assert.AreEqual(1, _view.OnDisposeCallCount);
+            Assert.AreEqual(0, _view.OnDisposeAsyncCallCount);
         }
 
         [Test]
@@ -172,6 +177,23 @@ namespace MVP.Tests
             
             // Act & Assert - Second disposal should not throw
             await _view.DisposeAsync(cts.Token);
+            _view.Dispose();
+
+            Assert.AreEqual(1, _view.OnDisposeAsyncCallCount);
+            Assert.AreEqual(0, _view.OnDisposeCallCount);
+        }
+
+        [UnityTest]
+        public IEnumerator Dispose_GameObjectDestruction_DoesNotCallHookAgain()
+        {
+            _view.Dispose();
+
+            yield return null;
+
+            Assert.IsTrue(_gameObject == null);
+            Assert.IsTrue(_view.IsDisposed);
+            Assert.AreEqual(1, _view.OnDisposeCallCount);
+            Assert.AreEqual(0, _view.OnDisposeAsyncCallCount);
         }
     }
 }

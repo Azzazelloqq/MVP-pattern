@@ -57,6 +57,7 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeAsyncCallCount { get; private set; }
         public int OnDisposeCallCount { get; private set; }
         
         public string TestData { get; set; } = "Initial";
@@ -99,6 +100,7 @@ namespace MVP.Tests
         protected override async ValueTask OnDisposeAsync(CancellationToken token)
         {
             IsDisposeAsyncCalled = true;
+            OnDisposeAsyncCallCount++;
             CallOrder = CallOrderCounter.GetNext();
             await Task.Delay(10, token); // Simulate async cleanup
         }
@@ -113,6 +115,7 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeAsyncCallCount { get; private set; }
         public int OnDisposeCallCount { get; private set; }
         
         public TestPresenter AssignedPresenter => presenter;
@@ -154,6 +157,7 @@ namespace MVP.Tests
         protected override async ValueTask OnDisposeAsync(CancellationToken token)
         {
             IsDisposeAsyncCalled = true;
+            OnDisposeAsyncCallCount++;
             CallOrder = CallOrderCounter.GetNext();
             await Task.Delay(10, token); // Simulate async cleanup
         }
@@ -168,6 +172,8 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeAsyncCallCount { get; private set; }
+        public int OnDisposeCallCount { get; private set; }
         
         public TestCompletePresenter AssignedPresenter => presenter;
         public int CallOrder { get; private set; }
@@ -201,12 +207,14 @@ namespace MVP.Tests
         protected override void OnDispose()
         {
             IsDisposeCalled = true;
+            OnDisposeCallCount++;
             CallOrder = CallOrderCounter.GetNext();
         }
 
         protected override async ValueTask OnDisposeAsync(CancellationToken token)
         {
             IsDisposeAsyncCalled = true;
+            OnDisposeAsyncCallCount++;
             CallOrder = CallOrderCounter.GetNext();
             await Task.Delay(10, token); // Simulate async cleanup
         }
@@ -221,6 +229,8 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeAsyncCallCount { get; private set; }
+        public int OnDisposeCallCount { get; private set; }
         
         public TestPresenter AssignedPresenter => presenter;
         public int CallOrder { get; private set; }
@@ -253,12 +263,14 @@ namespace MVP.Tests
         protected override void OnDispose()
         {
             IsDisposeCalled = true;
+            OnDisposeCallCount++;
             CallOrder = CallOrderCounter.GetNext();
         }
 
         protected override async ValueTask OnDisposeAsync(CancellationToken token)
         {
             IsDisposeAsyncCalled = true;
+            OnDisposeAsyncCallCount++;
             CallOrder = CallOrderCounter.GetNext();
             await Task.Delay(10, token); // Simulate async cleanup
         }
@@ -394,6 +406,7 @@ namespace MVP.Tests
         public bool IsInitializeAsyncCalled { get; private set; }
         public bool IsDisposeCalled { get; private set; }
         public bool IsDisposeAsyncCalled { get; private set; }
+        public int OnDisposeAsyncCallCount { get; private set; }
         public int OnDisposeCallCount { get; private set; }
         
         public TestView AssignedView => view;
@@ -440,6 +453,7 @@ namespace MVP.Tests
         protected override async ValueTask OnDisposeAsync(CancellationToken token)
         {
             IsDisposeAsyncCalled = true;
+            OnDisposeAsyncCallCount++;
             CallOrder = CallOrderCounter.GetNext();
             await Task.Delay(10, token); // Simulate async cleanup
         }

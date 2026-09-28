@@ -62,6 +62,15 @@ The framework includes a comprehensive test suite with 95%+ code coverage:
 
 See the [Tests folder](./Tests/README.md) for detailed testing documentation.
 
+## Disposal hooks
+
+`Dispose()` invokes the derived `OnDispose()` hook once for `Model`, `View<TPresenter>`,
+and `Presenter<TView, TModel>` through `DisposableBase`'s virtual hook. The presenter
+also disposes its view and model. Repeated disposal does not invoke these hooks again.
+
+`DisposeAsync()` invokes `OnDisposeAsync()` instead of the synchronous hook.
+`ViewMonoBehaviour<TPresenter>` retains its separate Unity lifecycle disposal path.
+
 ## Dependencies
 
 - [Disposable](../Disposable/) - For resource management base classes

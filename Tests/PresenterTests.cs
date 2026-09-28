@@ -26,7 +26,7 @@ namespace MVP.Tests
         public void TearDown()
         {
             _presenter?.Dispose();
-            // View and Model are disposed by Presenter's composite disposable
+            // View and Model are disposed by the Presenter.
         }
 
         [Test]
@@ -38,16 +38,14 @@ namespace MVP.Tests
         }
 
         [Test]
-        public void Constructor_AddsViewAndModelToCompositeDisposable()
+        public void Constructor_OwnsViewAndModelLifetime()
         {
-            // This test verifies that view and model are properly managed
-            // We can't directly test composite disposable contents, but we can verify
-            // that they get disposed when presenter is disposed
+            // View and model are owned by the presenter, independently of its composite.
             
             // Act
             _presenter.Dispose();
 
-            // Assert - view and model should be disposed by composite disposable
+            // Assert
             Assert.IsTrue(_view.IsDisposed);
             Assert.IsTrue(_model.IsDisposed);
         }
@@ -116,6 +114,11 @@ namespace MVP.Tests
             _presenter.Dispose();
 
             Assert.AreEqual(1, _presenter.OnDisposeCallCount);
+            Assert.AreEqual(1, _view.OnDisposeCallCount);
+            Assert.AreEqual(1, _model.OnDisposeCallCount);
+            Assert.IsTrue(_presenter.IsDisposed);
+            Assert.IsTrue(_view.IsDisposed);
+            Assert.IsTrue(_model.IsDisposed);
         }
 
         [Test]
@@ -183,6 +186,8 @@ namespace MVP.Tests
             // Assert
             Assert.IsTrue(_view.IsDisposed);
             Assert.IsTrue(_model.IsDisposed);
+            Assert.AreEqual(1, _view.OnDisposeCallCount);
+            Assert.AreEqual(1, _model.OnDisposeCallCount);
         }
 
         [Test]
@@ -197,6 +202,10 @@ namespace MVP.Tests
             // Assert
             Assert.IsTrue(_view.IsDisposed);
             Assert.IsTrue(_model.IsDisposed);
+            Assert.IsTrue(_view.IsDisposeAsyncCalled);
+            Assert.IsTrue(_model.IsDisposeAsyncCalled);
+            Assert.AreEqual(0, _view.OnDisposeCallCount);
+            Assert.AreEqual(0, _model.OnDisposeCallCount);
         }
 
         [Test]
@@ -221,6 +230,14 @@ namespace MVP.Tests
             
             // Act & Assert - Second disposal should not throw
             await _presenter.DisposeAsync(cts.Token);
+            _presenter.Dispose();
+
+            Assert.AreEqual(1, _presenter.OnDisposeAsyncCallCount);
+            Assert.AreEqual(1, _view.OnDisposeAsyncCallCount);
+            Assert.AreEqual(1, _model.OnDisposeAsyncCallCount);
+            Assert.AreEqual(0, _presenter.OnDisposeCallCount);
+            Assert.AreEqual(0, _view.OnDisposeCallCount);
+            Assert.AreEqual(0, _model.OnDisposeCallCount);
         }
 
         [Test]
